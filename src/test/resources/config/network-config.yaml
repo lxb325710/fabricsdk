@@ -1,0 +1,196 @@
+---
+#
+# Copyright Fujitsu Australia Software Technology, IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+# The network connection profile provides client applications the information about the target
+# blockchain network that are necessary for the applications to interact with it. These are all
+# knowledge that must be acquired from out-of-band sources. This file provides such a source.
+#
+name: "Network-Config"
+
+#
+# Any properties with an "x-" prefix will be treated as application-specific, exactly like how naming
+# in HTTP headers or swagger properties work. The SDK will simply ignore these fields and leave
+# them for the applications to process. This is a mechanism for different components of an application
+# to exchange information that are not part of the standard schema described below. In particular,
+# the "x-type" property with the "hlfv1" value example below is used by Hyperledger Composer to
+# determine the type of Fabric networks (v0.6 vs. v1.0) it needs to work with.
+#
+x-type: "hlfv1"
+
+#
+# Describe what the target network is/does.
+#
+description: "The network used in the integration tests"
+
+#
+# Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
+#
+version: 1.0.0
+
+#
+# The client section is SDK-specific. The sample below is for the node.js SDK
+#
+client:
+  # Which organization does this application instance belong to? The value must be the name of an org
+  # defined under "organizations"
+  organization: Org1
+
+  # Some SDKs support pluggable KV stores, the properties under "credentialStore"
+  # are implementation specific
+  credentialStore:
+    # [Optional]. Specific to FileKeyValueStore.js or similar implementations in other SDKs. Can be others
+    # if using an alternative impl. For instance, CouchDBKeyValueStore.js would require an object
+    # here for properties like url, db name, etc.
+    path: "/tmp/hfc-kvs"
+
+    # [Optional]. Specific to the CryptoSuite implementation. Software-based implementations like
+    # CryptoSuite_ECDSA_AES.js in node SDK requires a key store. PKCS#11 based implementations does
+    # not.
+    cryptoStore:
+      # Specific to the underlying KeyValueStore that backs the crypto key store.
+      path: "/tmp/hfc-cvs"
+
+    # [Optional]. Specific to Composer environment
+    wallet: wallet-name
+
+#
+# list of participating organizations in this network
+#
+organizations:
+  Org1:
+    mspid: Org1MSP
+
+    peers:
+      - peer0.org1.example.com
+
+    # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
+    # network. Typically certificates provisioning is done in a separate process outside of the
+    # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
+    # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
+    # Fabric-CA servers.
+    certificateAuthorities:
+      - ca-org1
+
+    # [Optional]. If the application is going to make requests that are reserved to organization
+    # administrators, including creating/updating channels, installing/instantiating chaincodes, it
+    # must have access to the admin identity represented by the private key and signing certificate.
+    # Both properties can be the PEM string or local path to the PEM file. Note that this is mainly for
+    # convenience in development mode, production systems should not expose sensitive information
+    # this way. The SDK should allow applications to set the org admin identity via APIs, and only use
+    # this route as an alternative when it exists.
+    adminPrivateKey:
+      #path: src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/6b32e59640c594cf633ad8c64b5958ef7e5ba2a205cfeefd44a9e982ce624d93_sk
+      pem: |
+            -----BEGIN PRIVATE KEY-----
+            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgzhf4q/rIp+k+WZzm
+            nNzvhJXbh6eR/NivsiiH0tUanIWhRANCAAT67prQ8ToRYYhx5lxin3MhHQaiIHMb
+            dhaix7GzqzsTvO8nHDInZ9M7nOdVMViUf/DGRFS6vCUhYeUoMSB49PU+
+            -----END PRIVATE KEY-----
+
+    signedCert:
+      #path: src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+      pem: |
+            -----BEGIN CERTIFICATE-----
+            MIIC+TCCAp+gAwIBAgIUScTMk2GzBYilDmi/p/yYTU539ZcwCgYIKoZIzj0EAwIw
+            XTELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK
+            EwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMQ4wDAYDVQQDEwVhZG1pbjAe
+            Fw0xODA0MTEwNDA5MDBaFw0xOTAzMTAxMjE0MDBaMIGEMQswCQYDVQQGEwJVUzEX
+            MBUGA1UECBMOTm9ydGggQ2Fyb2xpbmExFDASBgNVBAoTC0h5cGVybGVkZ2VyMTAw
+            DQYDVQQLEwZjbGllbnQwCwYDVQQLEwRvcmcxMBIGA1UECxMLZGVwYXJ0bWVudDEx
+            FDASBgNVBAMTC3BlZXIxLWFkbWluMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE
+            +u6a0PE6EWGIceZcYp9zIR0GoiBzG3YWosexs6s7E7zvJxwyJ2fTO5znVTFYlH/w
+            xkRUurwlIWHlKDEgePT1PqOCARMwggEPMA4GA1UdDwEB/wQEAwICBDAMBgNVHRMB
+            Af8EAjAAMB0GA1UdDgQWBBQvKov6DHrpSS2UOtQfj+d7I7jfkjAfBgNVHSMEGDAW
+            gBRZawDKmCiM2GTDkwwtKMnsIJdXmzAuBgNVHREEJzAlgiNmYWJyaWMtcGVlci1k
+            ZXBsb3ktMzU1MjA2NDkxOS1xM213ZjB/BggqAwQFBgcIAQRzeyJhdHRycyI6eyJh
+            ZG1pbiI6InRydWUiLCJoZi5BZmZpbGlhdGlvbiI6Im9yZzEuZGVwYXJ0bWVudDEi
+            LCJoZi5FbnJvbGxtZW50SUQiOiJvcmRlcmVyLWFkbWluIiwiaGYuVHlwZSI6ImNs
+            aWVudCJ9fTAKBggqhkjOPQQDAgNIADBFAiEAk3AQ42bgxSRww2ha17oPwaVe0b3J
+            /7tppOoLugNRRS8CIFNmIQsq4VTBaSJ+4TXakBSdbtFjfg9KxhIw/n2Oc97M
+            -----END CERTIFICATE-----
+#
+# List of orderers to send transaction and channel create/update requests to. For the time
+# being only one orderer is needed. If more than one is defined, which one get used by the
+# SDK is implementation specific. Consult each SDK's documentation for its handling of orderers.
+#
+orderers:
+  orderer.example.com:
+    url: grpc://192.168.18.150:1152
+
+    # these are standard properties defined by the gRPC library
+    # they will be passed in as-is to gRPC client constructor
+    grpcOptions:
+#      ssl-target-name-override: orderer.example.com
+#      sslProvider: openSSL
+#      negotiationType: TLS
+#      hostnameOverride: orderer.example.com
+      grpc-max-send-message-length: 15
+      grpc.keepalive_time_ms: 360000
+      grpc.keepalive_timeout_ms: 180000
+
+    # src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/ordererOrganizations/example.com/tlsca
+#    tlsCACerts:
+#      pem: |
+#        -----BEGIN CERTIFICATE-----
+#        MIICNjCCAdygAwIBAgIRALBAjQY2Wfpwz6/bqKvkeAowCgYIKoZIzj0EAwIwbDEL
+#        MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+#        cmFuY2lzY28xFDASBgNVBAoTC2V4YW1wbGUuY29tMRowGAYDVQQDExF0bHNjYS5l
+#        eGFtcGxlLmNvbTAeFw0xODAyMjUxMjQzMjlaFw0yODAyMjMxMjQzMjlaMGwxCzAJ
+#        BgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJh
+#        bmNpc2NvMRQwEgYDVQQKEwtleGFtcGxlLmNvbTEaMBgGA1UEAxMRdGxzY2EuZXhh
+#        bXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAR/LJmaZdt0jZMgTfsQ
+#        vLkJTCDG4m8lNdtQI5VoCpKKSxMlFKUPU54ofttW2Vn76hm7/eK+Lq09LRgJheo1
+#        6y47o18wXTAOBgNVHQ8BAf8EBAMCAaYwDwYDVR0lBAgwBgYEVR0lADAPBgNVHRMB
+#        Af8EBTADAQH/MCkGA1UdDgQiBCDadvMVYJ3hG7FgDW7vlVW20s0L8mVUn/ggI2l0
+#        1ntSRTAKBggqhkjOPQQDAgNIADBFAiEAvX5+F+QnNPKX/Q/kFmkzOdRovEtgIylG
+#        EArBHBpaqpkCIDNzXoW//ROIslbKToWexg/kwAH1HMhkm9doTyaDxc4k
+#        -----END CERTIFICATE-----
+
+#
+# List of peers to send various requests to, including endorsement, query
+# and event listener registration.
+#
+peers:
+  peer0.org1.example.com:
+    url: grpc://192.168.18.150:1154
+    eventUrl: grpc://192.168.18.150:1155
+
+    grpcOptions:
+      grpc.http2.keepalive_time: 15
+#      ssl-target-name-override: peer0.org1.example.com
+#      negotiationType: TLS
+#      sslProvider: openSSL
+#      hostnameOverride: peer1.org1.example.com
+      org.hyperledger.fabric.sdk.orderer.ordererWaitTimeMilliSec: 40000
+      org.hyperledger.fabric.sdk.eventhub_connection.wait_time: 40000
+      org.hyperledger.fabric.sdk.orderer_retry.wait_time: 40000
+      org.hyperledger.fabric.sdk.proposal.wait.time: 40000
+
+#    tlsCACerts:
+#      path: src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.crt
+
+#
+# Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
+# certificate management to be done via REST APIs. Application may choose to use a standard
+# Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
+#
+certificateAuthorities:
+  ca-org1:
+    url: http://192.168.18.150:1148
+    # the properties specified under this object are passed to the 'http' client verbatim when
+    # making the request to the Fabric-CA server
+#    httpOptions:
+#      verify: true
+
+    # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
+    # needed to enroll and invoke new users.
+    registrar: #single entitiy
+      enrollId: admin
+      enrollSecret: adminpw
+    # [Optional] The optional name of the CA.
+    caName: CA
+
