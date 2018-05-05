@@ -103,14 +103,11 @@ public class AffiliationService {
      * @return
      * @throws Exception
      */
-    public Collection<HFCAAffiliation> queryNextAffiliations(String orgName,String affiliationStr)throws Exception{
+    public HFCAAffiliation queryAffiliation(String orgName,String affiliationStr)throws Exception{
         HFCAClient hfcaClient = blockchainService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
         HFCAAffiliation affiliation = hfcaClient.newHFCAAffiliation(affiliationStr);
         affiliation.read(admin);
-        return affiliation.getChildren();
-        // .stream()
-        // .map(f->f.getName())
-        // .forEach(System.out::println);
+        return affiliation;
     }
 }

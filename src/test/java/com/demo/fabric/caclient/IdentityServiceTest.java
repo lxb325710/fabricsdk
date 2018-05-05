@@ -131,13 +131,13 @@ public class IdentityServiceTest {
     }
 
     /**
-     * 测试查询某一个用户身份
+     * 测试查询某一个用户身份  `
      * @throws Exception
      */
     @Test
     public void queryIdentity()throws Exception{
         String orgName = configService.getBlockchainConfig().getClientOrganization().getName();
-        HFCAIdentity identity = identityService.queryIdentity(orgName,"new31-user");
+        HFCAIdentity identity = identityService.queryIdentity(orgName,"newOrg-admin");
         assertNotNull(identity.getSecret());
     }
 
