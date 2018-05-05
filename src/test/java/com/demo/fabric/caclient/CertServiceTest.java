@@ -5,6 +5,7 @@ import com.demo.fabric.Application;
 import com.demo.fabric.blockchain.ConfigService;
 import com.demo.fabric.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric_ca.sdk.Attribute;
 import org.hyperledger.fabric_ca.sdk.HFCAIdentity;
 import org.junit.Test;
@@ -29,12 +30,28 @@ import static org.junit.Assert.assertNotNull;
 public class CertServiceTest {
 
     @Resource
-    private IdentityService identityService;
+    private CertService certService;
 
     @Resource
     private ConfigService  configService;
 
-    @Resource
-    private CertService certService;
+    @Test
+    public void testCert() throws Exception{
+        String username = "newOrg-admin";
+        String secert = "123456";
+        String org = "Org1";
+        UserVO userVO = new UserVO(username,org);
+        userVO.setEnrollmentSecret(secert);
+        Enrollment enrollment = certService.enroll(userVO.getName(),userVO.getEnrollmentSecret());
+        log.info(enrollment.getCert());
+        log.info(enrollment.getKey().toString());
+        userVO.setEnrollment(enrollment);
+
+        enrollment = certService.reenroll(configService.getBlockchainConfig().getClientOrganization().getMspId(),username,enrollment);
+        log.info(enrollment.getCert());
+        log.info(enrollment.getKey().toString());
+
+        certService.revokeCert(userVO,enrollment);
+    }
 
 }

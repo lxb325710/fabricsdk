@@ -1,13 +1,9 @@
 package com.demo.fabric.caclient;
 
 import com.demo.fabric.blockchain.BlockchainService;
-import com.demo.fabric.domain.SampleStore;
-import com.demo.fabric.domain.SampleUser;
 import com.demo.fabric.blockchain.ConfigService;
 import com.demo.fabric.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
-import org.hyperledger.fabric.sdk.Enrollment;
-import org.hyperledger.fabric.sdk.NetworkConfig;
 import org.hyperledger.fabric.sdk.User;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.hyperledger.fabric_ca.sdk.HFCAIdentity;
@@ -16,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Collection;
 

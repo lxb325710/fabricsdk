@@ -33,26 +33,10 @@ public class SampleUser implements User, Serializable {
     private String enrollmentSecret;
     Enrollment enrollment = null; //need access in test env.
 
-    private transient SampleStore keyValStore;
-    private String keyValStoreName;
-
-    public SampleUser(String name, String org, SampleStore fs) {
+    public SampleUser(String name, String org) {
         this.name = name;
 
-        this.keyValStore = fs;
         this.organization = org;
-        this.keyValStoreName = toKeyValStoreName(this.name, org);
-        String memberStr = keyValStore.getValue(keyValStoreName);
-        if (null == memberStr) {
-            saveState();
-        } else {
-            restoreState();
-        }
-    }
-
-    static boolean isStored(String name, String org, SampleStore fs) {
-
-        return fs.hasValue(toKeyValStoreName(name, org));
     }
 
     @Override
@@ -68,7 +52,6 @@ public class SampleUser implements User, Serializable {
     public void setRoles(Set<String> roles) {
 
         this.roles = roles;
-        saveState();
     }
 
     @Override
@@ -84,7 +67,6 @@ public class SampleUser implements User, Serializable {
     public void setAccount(String account) {
 
         this.account = account;
-        saveState();
     }
 
     @Override
@@ -99,7 +81,6 @@ public class SampleUser implements User, Serializable {
      */
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
-        saveState();
     }
 
     @Override
@@ -125,66 +106,17 @@ public class SampleUser implements User, Serializable {
         return this.enrollment != null;
     }
 
-    /**
-     * Save the state of this user to the key value store.
-     */
-    void saveState() {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(this);
-            oos.flush();
-            keyValStore.setValue(keyValStoreName, Hex.toHexString(bos.toByteArray()));
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Restore the state of this user from the key value store (if found).  If not found, do nothing.
-     */
-    SampleUser restoreState() {
-        String memberStr = keyValStore.getValue(keyValStoreName);
-        if (null != memberStr) {
-            // The user was found in the key value store, so restore the
-            // state.
-            byte[] serialized = Hex.decode(memberStr);
-            ByteArrayInputStream bis = new ByteArrayInputStream(serialized);
-            try {
-                ObjectInputStream ois = new ObjectInputStream(bis);
-                SampleUser state = (SampleUser) ois.readObject();
-                if (state != null) {
-                    this.name = state.name;
-                    this.roles = state.roles;
-                    this.account = state.account;
-                    this.affiliation = state.affiliation;
-                    this.organization = state.organization;
-                    this.enrollmentSecret = state.enrollmentSecret;
-                    this.enrollment = state.enrollment;
-                    this.mspId = state.mspId;
-                    return this;
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(String.format("Could not restore state of member %s", this.name), e);
-            }
-        }
-        return null;
-    }
-
     public String getEnrollmentSecret() {
         return enrollmentSecret;
     }
 
     public void setEnrollmentSecret(String enrollmentSecret) {
         this.enrollmentSecret = enrollmentSecret;
-        saveState();
     }
 
     public void setEnrollment(Enrollment enrollment) {
 
         this.enrollment = enrollment;
-        saveState();
 
     }
 
@@ -201,7 +133,6 @@ public class SampleUser implements User, Serializable {
 
     public void setMspId(String mspID) {
         this.mspId = mspID;
-        saveState();
 
     }
 

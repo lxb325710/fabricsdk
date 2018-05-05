@@ -1,6 +1,5 @@
 package com.demo.fabric.vo;
 
-import com.demo.fabric.domain.SampleStore;
 import io.netty.util.internal.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,11 +34,6 @@ public class UserVO implements User, Serializable {
     public UserVO(String name, String org) {
         this.name = name;
         this.organization = org;
-    }
-
-    static boolean isStored(String name, String org, SampleStore fs) {
-
-        return fs.hasValue(toKeyValStoreName(name, org));
     }
 
     @Override
