@@ -5,6 +5,7 @@ import com.demo.fabric.blockchain.ConfigService;
 import org.hyperledger.fabric.sdk.User;
 import org.hyperledger.fabric_ca.sdk.HFCAAffiliation;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.Collection;
 /**
  * 从属关系（组织机构）服务
  */
+@Service("affiliationService")
 public class AffiliationService {
 
     @Resource
@@ -57,9 +59,9 @@ public class AffiliationService {
     public HFCAAffiliation.HFCAAffiliationResp updateAffiliation(String orgName,String oldAffiliationStr,String newAffiliationStr)throws Exception{
         HFCAClient hfcaClient = blockchainService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
-        //构建HFCAAffiliation 对象,设置从属关系 为 org1.department1
+        //构建HFCAAffiliation 对象,设置从属关系 为 org1.department1.team1
         HFCAAffiliation affiliation = hfcaClient.newHFCAAffiliation(oldAffiliationStr);
-        //设置要更新的从属关系为org1.department3
+        //设置要更新的从属关系为org1.department1.team2
         affiliation.setUpdateName(newAffiliationStr);
         //使用admin 身份更新从属关系.
         // 第二个参数 true 表示，同时更新已经绑定到org1.department1上的所有的身份信息为org1.department3。
@@ -86,10 +88,9 @@ public class AffiliationService {
      * @return
      * @throws Exception
      */
-    public Collection<HFCAAffiliation> queryAllAffiliations(String orgName)throws Exception{
+    public HFCAAffiliation queryAffiliation(String orgName)throws Exception{
         HFCAClient hfcaClient = blockchainService.getCa();
-        return hfcaClient.getHFCAAffiliations(configService.getBlockchainConfig().getPeerAdmin(orgName))
-                .getChildren();
+        return hfcaClient.getHFCAAffiliations(configService.getBlockchainConfig().getPeerAdmin(orgName));
         //        .stream()
         //        .map(f->f.getName())
         //        .forEach(System.out::println);
@@ -102,7 +103,7 @@ public class AffiliationService {
      * @return
      * @throws Exception
      */
-    public Collection<HFCAAffiliation> queryAffiliations(String orgName,String affiliationStr)throws Exception{
+    public Collection<HFCAAffiliation> queryNextAffiliations(String orgName,String affiliationStr)throws Exception{
         HFCAClient hfcaClient = blockchainService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
         HFCAAffiliation affiliation = hfcaClient.newHFCAAffiliation(affiliationStr);
