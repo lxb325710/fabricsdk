@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -52,6 +54,11 @@ public class CertServiceTest {
         log.info(enrollment.getKey().toString());
 
         certService.revokeCert(userVO,enrollment);
+    }
+
+    @Test
+    public void test() throws Exception{
+        certService.generateCRL("Org1");
     }
 
 }
