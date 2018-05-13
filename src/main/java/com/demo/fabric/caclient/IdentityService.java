@@ -1,6 +1,5 @@
 package com.demo.fabric.caclient;
 
-import com.demo.fabric.blockchain.BlockchainService;
 import com.demo.fabric.blockchain.ConfigService;
 import com.demo.fabric.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +21,6 @@ import java.util.Collection;
 @Service("identityService")
 public class IdentityService {
 
-    @Resource
-    private BlockchainService blockchainService;
-
     @Value("${blockchain.keystore.path}")
     private String  keystore;
 
@@ -38,7 +34,7 @@ public class IdentityService {
      * @throws Exception
      */
     public String register(UserVO userVO)throws Exception{
-        HFCAClient hfcaClient = blockchainService.getCa();
+        HFCAClient hfcaClient = configService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(userVO.getOrganization());
         // 正式生产环境可能需要从 database 或者ldap 中检查是否已经注册.
         RegistrationRequest rr = new RegistrationRequest(userVO.getName(),userVO.getAffiliation());
@@ -61,7 +57,7 @@ public class IdentityService {
      */
     public HFCAIdentity registerIdentity(UserVO userVO) throws Exception{
 
-        HFCAClient hfcaClient = blockchainService.getCa();
+        HFCAClient hfcaClient = configService.getCa();
         HFCAIdentity identity = hfcaClient.newHFCAIdentity(userVO.getName());
         // 正式生产环境可能需要从 database 或者ldap 中检查是否已经注册.
         identity.setAffiliation(userVO.getAffiliation());
@@ -69,7 +65,7 @@ public class IdentityService {
         identity.setSecret(userVO.getEnrollmentSecret());
         identity.setType("user");
         // 创建用户身份后，并未生成证书
-        int statusCode = identity.create(blockchainService.getClient().getUserContext());
+        int statusCode = identity.create(configService.getClient().getUserContext());
         if(HttpStatus.CREATED.value()!=statusCode){
             return null;
         }
@@ -81,7 +77,7 @@ public class IdentityService {
      * @throws Exception
      */
     public int updateIdentity(String newUserName,String orgName)throws Exception{
-        HFCAClient hfcaClient = blockchainService.getCa();
+        HFCAClient hfcaClient = configService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
         HFCAIdentity identity = hfcaClient.newHFCAIdentity(newUserName);
         identity.setType("client");
@@ -96,7 +92,7 @@ public class IdentityService {
      * @throws Exception
      */
     public Collection<HFCAIdentity> queryAllIdentity(String orgName)throws Exception{
-        HFCAClient hfcaClient = blockchainService.getCa();
+        HFCAClient hfcaClient = configService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
         // user 代表客户端身份
         return hfcaClient.getHFCAIdentities(admin);
@@ -113,7 +109,7 @@ public class IdentityService {
      * @throws Exception
      */
     public HFCAIdentity queryIdentity(String orgName,String userName)throws Exception{
-        HFCAClient hfcaClient = blockchainService.getCa();
+        HFCAClient hfcaClient = configService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
         HFCAIdentity identity  = hfcaClient.newHFCAIdentity(userName);
         identity.read(admin);
@@ -127,7 +123,7 @@ public class IdentityService {
      * @throws Exception
      */
     public int deleteIdentity(String orgName,String userName)throws Exception{
-        HFCAClient hfcaClient = blockchainService.getCa();
+        HFCAClient hfcaClient = configService.getCa();
         User admin = configService.getBlockchainConfig().getPeerAdmin(orgName);
         //构建要删除的用户身份信息对象。deleteUserName 为用户的身份id.
         HFCAIdentity identity = hfcaClient.newHFCAIdentity(userName);

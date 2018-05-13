@@ -73,7 +73,7 @@ organizations:
     # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
     # Fabric-CA servers.
     certificateAuthorities:
-      - ca-org1
+    #  - ca-org1
 
     # [Optional]. If the application is going to make requests that are reserved to organization
     # administrators, including creating/updating channels, installing/instantiating chaincodes, it
@@ -83,35 +83,13 @@ organizations:
     # this way. The SDK should allow applications to set the org admin identity via APIs, and only use
     # this route as an alternative when it exists.
     adminPrivateKey:
-      #path: src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/6b32e59640c594cf633ad8c64b5958ef7e5ba2a205cfeefd44a9e982ce624d93_sk
-      pem: |
-            -----BEGIN PRIVATE KEY-----
-            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgzhf4q/rIp+k+WZzm
-            nNzvhJXbh6eR/NivsiiH0tUanIWhRANCAAT67prQ8ToRYYhx5lxin3MhHQaiIHMb
-            dhaix7GzqzsTvO8nHDInZ9M7nOdVMViUf/DGRFS6vCUhYeUoMSB49PU+
-            -----END PRIVATE KEY-----
+      path: src/test/resources/config/users/Admin@org1.example.com/msp/keystore/key.pem
+#      pem:
 
     signedCert:
-      #path: src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
-      pem: |
-            -----BEGIN CERTIFICATE-----
-            MIIC+TCCAp+gAwIBAgIUScTMk2GzBYilDmi/p/yYTU539ZcwCgYIKoZIzj0EAwIw
-            XTELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK
-            EwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMQ4wDAYDVQQDEwVhZG1pbjAe
-            Fw0xODA0MTEwNDA5MDBaFw0xOTAzMTAxMjE0MDBaMIGEMQswCQYDVQQGEwJVUzEX
-            MBUGA1UECBMOTm9ydGggQ2Fyb2xpbmExFDASBgNVBAoTC0h5cGVybGVkZ2VyMTAw
-            DQYDVQQLEwZjbGllbnQwCwYDVQQLEwRvcmcxMBIGA1UECxMLZGVwYXJ0bWVudDEx
-            FDASBgNVBAMTC3BlZXIxLWFkbWluMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE
-            +u6a0PE6EWGIceZcYp9zIR0GoiBzG3YWosexs6s7E7zvJxwyJ2fTO5znVTFYlH/w
-            xkRUurwlIWHlKDEgePT1PqOCARMwggEPMA4GA1UdDwEB/wQEAwICBDAMBgNVHRMB
-            Af8EAjAAMB0GA1UdDgQWBBQvKov6DHrpSS2UOtQfj+d7I7jfkjAfBgNVHSMEGDAW
-            gBRZawDKmCiM2GTDkwwtKMnsIJdXmzAuBgNVHREEJzAlgiNmYWJyaWMtcGVlci1k
-            ZXBsb3ktMzU1MjA2NDkxOS1xM213ZjB/BggqAwQFBgcIAQRzeyJhdHRycyI6eyJh
-            ZG1pbiI6InRydWUiLCJoZi5BZmZpbGlhdGlvbiI6Im9yZzEuZGVwYXJ0bWVudDEi
-            LCJoZi5FbnJvbGxtZW50SUQiOiJvcmRlcmVyLWFkbWluIiwiaGYuVHlwZSI6ImNs
-            aWVudCJ9fTAKBggqhkjOPQQDAgNIADBFAiEAk3AQ42bgxSRww2ha17oPwaVe0b3J
-            /7tppOoLugNRRS8CIFNmIQsq4VTBaSJ+4TXakBSdbtFjfg9KxhIw/n2Oc97M
-            -----END CERTIFICATE-----
+      path: src/test/resources/config/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+#      pem:
+
 #
 # List of orderers to send transaction and channel create/update requests to. For the time
 # being only one orderer is needed. If more than one is defined, which one get used by the
@@ -119,7 +97,7 @@ organizations:
 #
 orderers:
   orderer.example.com:
-    url: grpc://192.168.18.150:1152
+    url: grpc://192.168.18.135:31010
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
@@ -156,8 +134,8 @@ orderers:
 #
 peers:
   peer0.org1.example.com:
-    url: grpc://192.168.18.150:1154
-    eventUrl: grpc://192.168.18.150:1155
+    url: grpc://192.168.18.135:1154
+    eventUrl: grpc://192.168.18.135:1155
 
     grpcOptions:
       grpc.http2.keepalive_time: 15
@@ -179,8 +157,8 @@ peers:
 # Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
 #
 certificateAuthorities:
-  ca-org1:
-    url: http://192.168.18.150:1148
+##  ca-org1:
+##    url: http://192.168.18.150:1148
     # the properties specified under this object are passed to the 'http' client verbatim when
     # making the request to the Fabric-CA server
 #    httpOptions:
@@ -188,9 +166,9 @@ certificateAuthorities:
 
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
-    registrar: #single entitiy
-      enrollId: admin
-      enrollSecret: adminpw
+##    registrar: #single entitiy
+##      enrollId: admin
+##      enrollSecret: adminpw
     # [Optional] The optional name of the CA.
-    caName: CA
+##    caName: CA
 
